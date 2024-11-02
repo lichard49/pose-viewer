@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let camera;
 let scene;
@@ -26,6 +27,12 @@ function initViewer() {
   renderer.setSize(width, height);
   renderer.render(scene, camera);
   document.body.appendChild(renderer.domElement);
+
+  // set up controller
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.addEventListener('change', () => {
+    renderer.render(scene, camera);
+  });
 }
 
 initViewer();

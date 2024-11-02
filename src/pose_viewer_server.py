@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, WebSocket
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-import numpy as np
+from pose_utils import loadPoses
 
 
 app = FastAPI()
@@ -22,5 +22,8 @@ async def get(request: Request):
 async def websocketEndpoint(websocket: WebSocket):
   await websocket.accept()
 
-  data = np.array([1, 2, 3], dtype=np.uint32)
-  await websocket.send_bytes(data.tobytes())
+  pose_file = './dataset/sit_to_stands-wham_output.pkl'
+  pose_faces, pose_vertices = loadPoses(pose_file)
+
+  await websocket.send_bytes(pose_faces.tobytes())
+  await websocket.send_bytes(pose_vertices[0].tobytes())

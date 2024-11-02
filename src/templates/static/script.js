@@ -19,3 +19,17 @@ function initViewer() {
 }
 
 initViewer();
+
+function setupWebsocket() {
+  const origin = window.location.origin;
+  const protocol = window.location.protocol;
+  const websocketUrl = origin.replace(protocol, 'ws:') + '/ws';
+
+  const websocket = new WebSocket(websocketUrl);
+  websocket.binaryType = 'arraybuffer';
+  websocket.onmessage = function(event) {
+    console.log(new Uint32Array(event.data));
+  };
+}
+
+setupWebsocket();

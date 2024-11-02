@@ -48,6 +48,16 @@ function renderPose(faces, vertices) {
   renderer.render(scene, camera);
 }
 
+const modelLoader = document.getElementById('model-loader');
+
+function showModelLoader(show) {
+  if (show) {
+    modelLoader.style.display = 'block';
+  } else {
+    modelLoader.style.display = 'none';
+  }
+}
+
 let pose_faces = null;
 let pose_vertices = null;
 
@@ -59,14 +69,17 @@ function setupWebsocket() {
   const websocket = new WebSocket(websocketUrl);
   websocket.binaryType = 'arraybuffer';
   websocket.onmessage = function(event) {
-    if (pose_faces === null) {
-      pose_faces = new Uint32Array(event.data);
-    } else if (pose_vertices === null) {
-      pose_vertices = new Float32Array(event.data);
-      console.log('render', pose_faces, pose_vertices);
-      renderPose(pose_faces, pose_vertices);
+    if (event.data instanceof ArrayBuffer) {
+      if (pose_faces === null) {
+        pose_faces = new Uint32Array(event.data);
+      } else if (pose_vertices === null) {
+        pose_vertices = new Float32Array(event.data);
 
-      pose_vertices = null;
+        showModelLoader(false);
+        renderPose(pose_faces, pose_vertices);
+
+        pose_vertices = null;
+      }
     }
   };
 }

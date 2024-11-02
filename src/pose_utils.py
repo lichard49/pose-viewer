@@ -2,6 +2,9 @@ import joblib
 import smplx
 
 
+FRAME_RATE = 30
+
+
 def loadPoses(pose_file):
   pose_data = joblib.load(pose_file)
   person_id = 0

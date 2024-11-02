@@ -58,6 +58,8 @@ function setupWebsocket() {
       pose_vertices = new Float32Array(event.data);
       console.log('render', pose_faces, pose_vertices);
       renderPose(pose_faces, pose_vertices);
+
+      pose_vertices = null;
     }
   };
 }

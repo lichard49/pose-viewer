@@ -2,12 +2,15 @@ from fastapi import FastAPI, Request, WebSocket
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from pose_utils import loadPoses
+import time
+
+from pose_utils import loadPoses, FRAME_RATE
 
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='./src/templates/static', html=True), name='static')
 templates = Jinja2Templates(directory='./src/templates')
+
 
 @app.get('/')
 async def get(request: Request):
@@ -26,4 +29,6 @@ async def websocketEndpoint(websocket: WebSocket):
   pose_faces, pose_vertices = loadPoses(pose_file)
 
   await websocket.send_bytes(pose_faces.tobytes())
-  await websocket.send_bytes(pose_vertices[0].tobytes())
+  for vertices in pose_vertices:
+    await websocket.send_bytes(vertices.tobytes())
+    time.sleep(1./FRAME_RATE)

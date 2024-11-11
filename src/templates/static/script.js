@@ -64,7 +64,7 @@ let pose_vertices = null;
 function setupWebsocket() {
   const origin = window.location.origin;
   const protocol = window.location.protocol;
-  const websocketUrl = origin.replace(protocol, 'ws:') + '/ws';
+  const websocketUrl = origin.replace(protocol, 'ws:') + '/ws/output';
 
   const websocket = new WebSocket(websocketUrl);
   websocket.binaryType = 'arraybuffer';

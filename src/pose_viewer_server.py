@@ -1,15 +1,13 @@
-from fastapi import FastAPI, Request, WebSocket
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from websockets.exceptions import ConnectionClosed
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
-import time
-
-from pose_utils import loadPoses, FRAME_RATE
 
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='./src/templates/static', html=True), name='static')
 templates = Jinja2Templates(directory='./src/templates')
+output_websocket = None
 
 
 @app.get('/')
@@ -21,14 +19,36 @@ async def get(request: Request):
   )
 
 
-@app.websocket('/ws')
-async def websocketEndpoint(websocket: WebSocket):
+@app.websocket('/ws/input')
+async def inputWebsocketEndpoint(websocket: WebSocket):
   await websocket.accept()
 
-  pose_file = './dataset/sit_to_stands-wham_output.pkl'
-  pose_faces, pose_vertices = loadPoses(pose_file)
+  try:
+    while websocket:
+      # receive data from input websocket
+      data = await websocket.receive_bytes()
 
-  await websocket.send_bytes(pose_faces.tobytes())
-  for vertices in pose_vertices:
-    await websocket.send_bytes(vertices.tobytes())
-    time.sleep(1./FRAME_RATE)
+      if output_websocket is not None:
+        # pass it on to output websocket if possible
+        await output_websocket.send_bytes(data)
+      else:
+        print('no output client to send data to')
+
+  except (WebSocketDisconnect, ConnectionClosed):
+    print('input client disconnected')
+
+
+@app.websocket('/ws/output')
+async def outputWebsocketEndpoint(websocket: WebSocket):
+  global output_websocket
+
+  await websocket.accept()
+  output_websocket = websocket
+
+  try:
+    # keep socket alive
+    while websocket:
+      await websocket.receive_bytes()
+
+  except (WebSocketDisconnect, ConnectionClosed):
+    print('output client disconnected')

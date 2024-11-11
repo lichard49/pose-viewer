@@ -8,7 +8,7 @@ from pose_utils import loadPoses, FRAME_RATE
 async def readPoseFile(pose_file):
   pose_faces, pose_vertices = loadPoses(pose_file)
 
-  async with connect('ws://localhost:8000/ws/input') as websocket:
+  async with connect('ws://localhost:8000/ws/input/pose') as websocket:
     await websocket.send(pose_faces.tobytes())
 
     for vertices in pose_vertices:

@@ -19,8 +19,8 @@ async def get(request: Request):
   )
 
 
-@app.websocket('/ws/input')
-async def inputWebsocketEndpoint(websocket: WebSocket):
+@app.websocket('/ws/input/{mode}')
+async def inputWebsocketEndpoint(websocket: WebSocket, mode: str):
   await websocket.accept()
 
   try:
@@ -38,8 +38,8 @@ async def inputWebsocketEndpoint(websocket: WebSocket):
     print('input client disconnected')
 
 
-@app.websocket('/ws/output')
-async def outputWebsocketEndpoint(websocket: WebSocket):
+@app.websocket('/ws/output/{mode}')
+async def outputWebsocketEndpoint(websocket: WebSocket, mode: str):
   global output_websocket
 
   await websocket.accept()

@@ -13,15 +13,12 @@
       }
     }
   </script>
+  <script type="module" src="/static/output-cell.js"></script>
   <script type="module" src="/static/script.js"></script>
 </head>
 <body>
-  <div id="mode-chooser-panel">
-    <p>Choose mode:</p>
-    <button id="pose-mode">Pose</button>
-    <button id="orientation-mode">Orientation</button>
+  <div id="center-panel" class="panel">
+    <output-cell></output-cell>
   </div>
-
-  <span id="model-loader" class="loader"></span>
 </body>
 </html>

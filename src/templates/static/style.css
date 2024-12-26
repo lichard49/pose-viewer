@@ -1,5 +1,35 @@
 html, body {
+  background-color: #111111;
   margin: 0;
+}
+
+#center-panel {
+  display: flex;
+  flex-direction: row;
+  margin: 20px;
+}
+
+.output-cell {
+  background-color: black;
+  border-radius: 10px;
+  width: 600px;
+  height: 600px;
+  margin-right: 20px;
+  padding: 10px;
+}
+
+.output-cell-button {
+  background-color: #0071E3;
+  color: white;
+  border-radius: 980px;
+  border: none;
+  margin-right: 10px;
+  padding: 5px 10px;
+}
+
+.output-cell-viewer {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .loader {

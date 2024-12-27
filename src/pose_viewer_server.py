@@ -36,6 +36,8 @@ async def inputWebsocketEndpoint(websocket: WebSocket, mode: str):
 
   except (WebSocketDisconnect, ConnectionClosed):
     print('input client disconnected')
+    if output_websocket is not None:
+      await output_websocket.send_text('bye')
 
 
 @app.websocket('/ws/output/{mode}')

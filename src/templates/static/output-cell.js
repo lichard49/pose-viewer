@@ -17,8 +17,13 @@ class OutputCell extends HTMLElement {
     const uploadButton = document.createElement('button');
     uploadButton.setAttribute('class', 'output-cell-button');
     uploadButton.textContent = 'upload';
+    const deleteButton = document.createElement('button');
+    deleteButton.setAttribute('class', 'output-cell-button');
+    deleteButton.textContent = 'delete';
+    deleteButton.addEventListener('click', this.deleteSelf);
     buttonRow.appendChild(streamButton);
     buttonRow.appendChild(uploadButton);
+    buttonRow.appendChild(deleteButton);
 
     root.appendChild(buttonRow);
     this.initViewer()
@@ -63,6 +68,12 @@ class OutputCell extends HTMLElement {
     this.geometry.computeVertexNormals();
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  deleteSelf() {
+    const thisOutputCell = this.parentElement.parentElement;
+    const outputContainer = this.parentElement.parentElement.parentElement;
+    outputContainer.removeChild(thisOutputCell);
   }
 }
 

@@ -30,6 +30,11 @@ class OutputCell extends HTMLElement {
     this.renderer.domElement.setAttribute('class', 'output-cell-viewer');
     root.appendChild(this.renderer.domElement);
     this.append(root);
+
+    this.poseFaces = null;
+    this.poseVertices = [];
+    this.currentFrame = 0;
+    this.prevFrameTime = 0;
   }
 
   initViewer() {
@@ -74,6 +79,27 @@ class OutputCell extends HTMLElement {
     const thisOutputCell = this.parentElement.parentElement;
     const outputContainer = this.parentElement.parentElement.parentElement;
     outputContainer.removeChild(thisOutputCell);
+  }
+
+  startRenderLoop() {
+    this.renderer.setAnimationLoop((timestamp) => {
+      // downsample raw refresh rate to target animation loop
+      if (timestamp - this.prevFrameTime >= 33) {
+        // render next frame
+        this.renderPose(this.poseFaces, this.poseVertices[this.currentFrame]);
+        this.currentFrame++;
+        if (this.currentFrame >= this.poseVertices.length) {
+          this.currentFrame = 0;
+        }
+
+        // reset timer for next frame
+        this.prevFrameTime = timestamp;
+      }
+    });
+  }
+
+  stopRenderLoop() {
+    this.renderer.setAnimationLoop(null);
   }
 }
 
